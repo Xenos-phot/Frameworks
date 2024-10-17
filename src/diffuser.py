@@ -1,4 +1,4 @@
-from diffusers import DiffusionPipeline
+from diffusers import StableDiffusionXLPipeline
 import json
 import os
 from time import time
@@ -6,10 +6,9 @@ import torch
 
 output_dir = '../output/diffusers'
 os.makedirs(output_dir, exist_ok=True)
-
 #Loading model
 model_loading_time = time()
-pipe = DiffusionPipeline.from_pretrained("stablediffusionapi/realvisxl-v40-lightning", torch_dtype=torch.float16, requires_grad=False)
+pipe = StableDiffusionXLPipeline.from_pretrained("SG161222/RealVisXL_V4.0_Lightning", torch_dtype=torch.float16, requires_grad=False)
 pipe.to("cuda")
 print('Model loaded in',time()-model_loading_time,'seconds')
 
@@ -17,7 +16,7 @@ print('Model loaded in',time()-model_loading_time,'seconds')
 with open('../prompts.json', 'r') as f:
     prompts = json.load(f)
 
-
+average_time =0
 # Running Inference
 for prompt_index in range(len(prompts)):
     torch.cuda.empty_cache()
@@ -32,10 +31,17 @@ for prompt_index in range(len(prompts)):
     print(prompt)
     st_time = time()
     with torch.no_grad():
-        images = pipe(prompt, num_images_per_prompt=4).images  # Generate 4 images at once
+        images = pipe(prompt,
+                      num_inference_steps=10,
+                      strength=1,
+
+                      ).images  # Generate 4 images at once
     print(f'For prompt {prompt_index} time taken is:', time()-st_time)
+    average_time+=time()-st_time
     # Save each generated image
     for j, image in enumerate(images):
         image_path = os.path.join(prompt_dir, f"img_{j}.png")
         image.save(image_path)
-        print(f"Saved image: {image_path}")
+        print(f"Saved image :{image_path}")
+
+print(f"Average_time:", average_time/len(prompts))
