@@ -26,10 +26,10 @@ schedulers = {
     "DPMPP_2M_SDE_Lu": (DPMSolverMultistepScheduler, {"use_lu_lambdas": True, "algorithm_type": "sde-dpmsolver++"}),
     "DPMPP_2M_SDE_Stable": (DPMSolverMultistepScheduler, {"algorithm_type": "sde-dpmsolver++", "euler_at_final": True}),
 }
-scheduler = schedulers["DPMPP_2M_SDE_Stable"][0].from_pretrained(
+scheduler = schedulers["DPMPP_2M_SDE_Lu"][0].from_pretrained(
             "SG161222/RealVisXL_V4.0_Lightning",
             subfolder="scheduler",
-            **schedulers["DPMPP_2M_SDE_Stable"][1],
+            **schedulers["DPMPP_2M_SDE_Lu"][1],
         )
 
 # seed 
@@ -49,8 +49,8 @@ pipe = StableDiffusionXLPipeline.from_pretrained("SG161222/RealVisXL_V4.0_Lightn
                                                     torch_dtype=torch.float16,
                                                     variant = "fp16",
                                                     requires_grad=False)
-pipe.to("cuda")
 pipe.scheduler = scheduler
+pipe.to("cuda")
 
 # pipe.enable_xformers_memory_efficient_attention() # Increases inference time
 print('Model loaded in',time()-model_loading_time,'seconds')
@@ -82,6 +82,7 @@ for prompt_index in range(len(prompts)):
                         strength=1,
                         width=1024,
                         height=1024,
+                        num_images_per_prompt=4,
                       ).images  # Generate 4 images at once
         
     print(f'For prompt {prompt_index} time taken is:', time()-st_time)

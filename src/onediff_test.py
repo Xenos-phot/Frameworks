@@ -33,10 +33,10 @@ pipe = StableDiffusionXLPipeline.from_pretrained("SG161222/RealVisXL_V4.0_Lightn
                                                     requires_grad=False)
 pipe.to("cuda")
 pipe.scheduler = scheduler
-
+pipe = compile_pipe(pipe)
 # pipe.enable_xformers_memory_efficient_attention() # Increases inference time
 print('Model loaded in',time()-model_loading_time,'seconds')
-
+exit()
 
 
 # Loading data

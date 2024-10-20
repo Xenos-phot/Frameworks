@@ -10,7 +10,7 @@ with open('../prompts.json', 'r') as f:
 
 negative_prompt= "(octane render, render, drawing, anime, bad photo, bad photography:1.3), (worst quality, low quality, blurry:1.2), (bad teeth, deformed teeth, deformed lips), (bad anatomy, bad proportions:1.1), (deformed iris, deformed pupils), (deformed eyes, bad eyes), (deformed face, ugly face, bad face), (deformed hands, bad hands, fused fingers), morbid, mutilated, mutation, disfigured"
 sampler_name = "DPM++ SDE"
-cfg_scale = 7
+cfg_scale = 1
 steps=6
 scheduler="Karras"
 
@@ -22,7 +22,8 @@ payload = {
             "sampler_name": sampler_name,
             "scheduler" : scheduler,
             "cfg_scale": cfg_scale,
-            "batch_size": 4,
+            "image_strength": 1,
+            "batch_size": 1,
             "n_iter": 1,
             "width": 1024,
             "height": 1024,

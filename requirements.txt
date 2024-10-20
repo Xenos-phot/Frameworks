@@ -1,5 +1,4 @@
-torch==2.1.2+cu121
-xformers==0.0.28.post1
+torch==2.1.2
 diffusers
 transformers
 accelerate
