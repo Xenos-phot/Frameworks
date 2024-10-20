@@ -2,6 +2,7 @@ from diffusers import StableDiffusionXLPipeline
 from diffusers import DPMSolverMultistepScheduler, EulerDiscreteScheduler
 from safetensors.torch import load_file
 from diffusers import AutoencoderKL
+from onediffx import compile_pipe
 
 import json
 import os
@@ -13,36 +14,17 @@ os.makedirs(output_dir, exist_ok=True)
 
 # Schedulers
 common_config = {'beta_start': 0.00085, 'beta_end': 0.012, 'beta_schedule': 'scaled_linear'}
-schedulers = {
-    "Euler_K": (EulerDiscreteScheduler, {"use_karras_sigmas": True}),
 
-    "DPMPP_2M": (DPMSolverMultistepScheduler, {}),
-    "DPMPP_2M_K": (DPMSolverMultistepScheduler, {"use_karras_sigmas": True}),
-    "DPMPP_2M_Lu": (DPMSolverMultistepScheduler, {"use_lu_lambdas": True}),
-    "DPMPP_2M_Stable": (DPMSolverMultistepScheduler, {"euler_at_final": True}),
-
-    "DPMPP_2M_SDE": (DPMSolverMultistepScheduler, {"algorithm_type": "sde-dpmsolver++"}),
-    "DPMPP_2M_SDE_K": (DPMSolverMultistepScheduler, {"use_karras_sigmas": True, "algorithm_type": "sde-dpmsolver++"}),
-    "DPMPP_2M_SDE_Lu": (DPMSolverMultistepScheduler, {"use_lu_lambdas": True, "algorithm_type": "sde-dpmsolver++"}),
-    "DPMPP_2M_SDE_Stable": (DPMSolverMultistepScheduler, {"algorithm_type": "sde-dpmsolver++", "euler_at_final": True}),
-}
-scheduler = schedulers["DPMPP_2M_SDE_Stable"][0].from_pretrained(
+scheduler = DPMSolverMultistepScheduler.from_pretrained(
             "SG161222/RealVisXL_V4.0_Lightning",
             subfolder="scheduler",
-            **schedulers["DPMPP_2M_SDE_Stable"][1],
+            **{"algorithm_type": "sde-dpmsolver++", "euler_at_final": True},
         )
 
 # seed 
 seed =1
 generator = torch.Generator(device='cuda').manual_seed(seed)
 
-#Loading model and vae
-# vae_loading_time = time()
-# vae_state_dict = load_file("../models/sdxl_vae.safetensors")
-# vae =AutoencoderKL()
-# vae.load_state_dict(vae_state_dict, strict=False)
-# vae.to("torch.float16").to("cuda")
-# print('VAE loaded in',time()-vae_loading_time,'seconds')
 
 model_loading_time = time()
 pipe = StableDiffusionXLPipeline.from_pretrained("SG161222/RealVisXL_V4.0_Lightning",
