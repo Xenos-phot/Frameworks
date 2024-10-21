@@ -23,7 +23,7 @@ payload = {
             "scheduler" : scheduler,
             "cfg_scale": cfg_scale,
             "image_strength": 1,
-            "batch_size": 1,
+            "batch_size": 4,
             "n_iter": 1,
             "width": 1024,
             "height": 1024,

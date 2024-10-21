@@ -1,10 +1,10 @@
 {
   "3": {
     "inputs": {
-      "seed": 57211092599181,
-      "steps": 20,
+      "seed": 541438065104173,
+      "steps": 8,
       "cfg": 1,
-      "sampler_name": "dpmpp_sde",
+      "sampler_name": "dpmpp_2m_sde",
       "scheduler": "karras",
       "denoise": 1,
       "model": [
@@ -40,9 +40,9 @@
   },
   "5": {
     "inputs": {
-      "width": 768,
-      "height": 768,
-      "batch_size": 1
+      "width": 1024,
+      "height": 1024,
+      "batch_size": 4
     },
     "class_type": "EmptyLatentImage",
     "_meta": {
@@ -51,7 +51,7 @@
   },
   "6": {
     "inputs": {
-      "text": "beautiful scenery nature glass bottle landscape,  purple galaxy bottle,",
+      "text": "beautiful scenery nature glass bottle landscape, , purple galaxy bottle,",
       "clip": [
         "4",
         1
@@ -59,12 +59,12 @@
     },
     "class_type": "CLIPTextEncode",
     "_meta": {
-      "title": "CLIP Text Encode (PositivePrompt)"
+      "title": "CLIP Text Encode (Pos)"
     }
   },
   "7": {
     "inputs": {
-      "text": "text, watermark",
+      "text": "(octane render, render, drawing, anime, bad photo, bad photography:1.3), (worst quality, low quality, blurry:1.2), (bad teeth, deformed teeth, deformed lips), (bad anatomy, bad proportions:1.1), (deformed iris, deformed pupils), (deformed eyes, bad eyes), (deformed face, ugly face, bad face), (deformed hands, bad hands, fused fingers), morbid, mutilated, mutation, disfigured",
       "clip": [
         "4",
         1
@@ -72,7 +72,7 @@
     },
     "class_type": "CLIPTextEncode",
     "_meta": {
-      "title": "CLIP Text Encode (Negative Prompt)"
+      "title": "CLIP Text Encode (Neg)"
     }
   },
   "8": {

@@ -78,12 +78,12 @@ for prompt_index in range(len(prompts)):
         images = pipe(prompt,
                         guidance_scale=1,
                         negative_prompt="(octane render, render, drawing, anime, bad photo, bad photography:1.3), (worst quality, low quality, blurry:1.2), (bad teeth, deformed teeth, deformed lips), (bad anatomy, bad proportions:1.1), (deformed iris, deformed pupils), (deformed eyes, bad eyes), (deformed face, ugly face, bad face), (deformed hands, bad hands, fused fingers), morbid, mutilated, mutation, disfigured",
-                        num_inference_steps=10,
+                        num_inference_steps=12,
                         strength=1,
                         width=1024,
                         height=1024,
                         num_images_per_prompt=4,
-                      ).images  # Generate 4 images at once
+                      ).images  
         
     print(f'For prompt {prompt_index} time taken is:', time()-st_time)
     average_time+=time()-st_time
