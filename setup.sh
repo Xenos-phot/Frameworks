@@ -11,7 +11,8 @@ cd models &&\
 cd ..
 mkdir repositories
 cd repositories && git clone https://github.com/siliconflow/onediff.git \
-    && git clone https://github.com/AUTOMATIC1111/stable-diffusion-webui
+    && git clone https://github.com/AUTOMATIC1111/stable-diffusion-webui \
+    && git clone git@github.com:comfyanonymous/ComfyUI.git
 cd ..
 cd repositories/onediff && python3 -m pip install -e .
 cd ../..
