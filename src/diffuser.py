@@ -8,6 +8,26 @@ import os
 from time import time
 import torch
 
+
+
+
+def inject_embeddings(pipe, embeddings):
+    # Add new tokens and their embeddings to the tokenizer and text encoder
+    tokenizer = pipe.tokenizer
+    text_encoder = pipe.text_encoder
+
+    for emb_name, embedding in embeddings.items():
+        # Add the embedding as a new token
+        tokenizer.add_tokens([emb_name])
+        token_id = tokenizer.convert_tokens_to_ids(emb_name)
+
+        # Resize the token embeddings to accommodate the new token
+        text_encoder.resize_token_embeddings(len(tokenizer))
+        
+        # Set the embedding for the new token
+        with torch.no_grad():
+            text_encoder.get_input_embeddings().weight[token_id] = embedding
+
 def  create_pipe():
 
     # Schedulers
@@ -30,14 +50,18 @@ def  create_pipe():
                 subfolder="scheduler",
                 **schedulers["DPMPP_2M_SDE_Lu"][1],
             )
+    # Inject embeddings into the text encoder
+
 
     # seed 
     seed =1
     generator = torch.Generator(device='cuda').manual_seed(seed)
 
+    vae = AutoencoderKL.from_pretrained("madebyollin/sdxl-vae-fp16-fix", torch_dtype=torch.float16)
 
     model_loading_time = time()
     pipe = StableDiffusionXLPipeline.from_pretrained("SG161222/RealVisXL_V4.0_Lightning",
+                                                     vae=vae,
                                                         torch_dtype=torch.float16,
                                                         variant = "fp16",
                                                         requires_grad=False)
@@ -56,7 +80,7 @@ def run_pipe(pipe,prompt):
         images = pipe(prompt,
                         guidance_scale=1,
                         negative_prompt="(octane render, render, drawing, anime, bad photo, bad photography:1.3), (worst quality, low quality, blurry:1.2), (bad teeth, deformed teeth, deformed lips), (bad anatomy, bad proportions:1.1), (deformed iris, deformed pupils), (deformed eyes, bad eyes), (deformed face, ugly face, bad face), (deformed hands, bad hands, fused fingers), morbid, mutilated, mutation, disfigured",
-                        num_inference_steps=10,
+                        num_inference_steps=15,
                         strength=1,
                         width=1024,
                         height=1024,
@@ -72,6 +96,19 @@ with open('../prompts.json', 'r') as f:
     prompts = json.load(f)
 
 pipe =create_pipe()
+
+# # Load all embeddings
+# embeddings_dir = "../embeddings"
+
+# embeddings = {}
+# for emb_file in os.listdir(embeddings_dir):
+#     if not emb_file.endswith('.pt'):
+#         continue
+#     embedding_path = os.path.join(embeddings_dir, emb_file)
+#     embeddings[emb_file] = torch.load(embedding_path, map_location='cuda')
+
+# inject_embeddings(pipe, embeddings)
+
 
 average_time =0
 # Running Inference
