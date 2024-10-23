@@ -3,3 +3,4 @@ output/
 repositories/
 models/
 src/__pycache__
+embedding/
