@@ -2,10 +2,9 @@ from typing import Dict, Optional
 from fastapi import FastAPI, BackgroundTasks, HTTPException
 from fastapi.responses import JSONResponse
 from pydantic import BaseModel
-from diffuser import create_pipe, run_pipe
+from diffuser_utils import create_pipe, run_pipe
 import ray
 from ray import serve
-from ray.serve.handle import RayServeHandle
 from starlette.requests import Request
 import asyncio
 from datetime import datetime
@@ -31,7 +30,6 @@ class JobStatus(BaseModel):
 @serve.deployment(
     num_replicas=1,
     ray_actor_options={"num_gpus": 1},
-    max_concurrent_queries=4  # Built-in Ray Serve queue limit
 )
 class DiffusionDeployment:
     def __init__(self):
