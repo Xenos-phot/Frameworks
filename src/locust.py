@@ -29,7 +29,7 @@ def run_load_test(users, duration):
     from subprocess import call
 
     # Construct the command
-    cmd = f"locust -f {__file__} --headless -u {users} -r {users} --run-time {duration}s --host=http://localhost:8080" # Replace host with your API host
+    cmd = f"locust -f {__file__} --headless -u {users} -r {users} --run-time {duration}s --host=http://localhost:8000" # Replace host with your API host
     
     # Run the command
     call(cmd, shell=True)
